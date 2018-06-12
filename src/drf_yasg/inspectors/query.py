@@ -43,12 +43,17 @@ class CoreAPICompatInspector(PaginatorInspector, FilterInspector):
             coreschema.String: openapi.TYPE_STRING,
             coreschema.Boolean: openapi.TYPE_BOOLEAN,
         }
+
+        parameter_kwargs = {}
+        if field.schema is not None:
+            parameter_kwargs = {'description': field.schema.description}
+
         return openapi.Parameter(
             name=field.name,
             in_=location_to_in[field.location],
             type=coreapi_types.get(type(field.schema), openapi.TYPE_STRING),
             required=field.required,
-            description=field.schema.description,
+            **parameter_kwargs
         )
 
 
